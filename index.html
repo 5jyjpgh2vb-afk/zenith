@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>Zenith — торговый бот</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap">
+<style>
+:root{--bg:#0d0807;--card:#1a0f0c;--line:#3a1f17;--tx:#f6ece6;--mut:#a38b80;--org:#ff7a2f;--red:#e5382d;--up:#4fd98a;--dn:#ff5a4d;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:'Manrope',system-ui,sans-serif;line-height:1.45;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.glow{position:fixed;inset:auto 0 0 0;height:380px;background:radial-gradient(ellipse 70% 100% at 50% 115%,rgba(255,110,40,.42),transparent 70%);pointer-events:none;z-index:0;animation:br 5s ease-in-out infinite}
+@keyframes br{50%{opacity:.55;transform:scale(1.1)}}
+.wrap{max-width:480px;margin:0 auto;padding:0 16px 60px;position:relative;z-index:1;animation:ld .9s cubic-bezier(.2,.8,.2,1)}
+@keyframes ld{from{opacity:0;transform:translateY(14px)}}
+header{display:flex;justify-content:space-between;align-items:center;padding:18px 0 8px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px}
+.logo i{width:22px;height:22px;background:linear-gradient(135deg,var(--org),var(--red));transform:rotate(45deg);border-radius:5px;display:block;box-shadow:0 0 18px rgba(255,100,40,.6)}
+.pill{display:flex;align-items:center;gap:8px;padding:7px 12px;border:1px solid var(--line);border-radius:99px;font-size:13px;color:var(--mut);transition:all .5s}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--mut);transition:all .5s}
+.on.pill{border-color:#2f5a42;color:var(--tx)}
+.on .dot{background:var(--up);box-shadow:0 0 10px var(--up);animation:p 1.4s infinite}
+@keyframes p{50%{opacity:.3}}
+h1{font-size:34px;line-height:1.1;margin:18px 0 6px;font-weight:800;letter-spacing:-.02em}
+.sub{color:var(--mut);margin:0 0 20px;font-size:15px}
+.card{background:linear-gradient(160deg,#26140f,var(--card) 60%);border:1px solid var(--line);border-radius:22px;padding:18px;position:relative;overflow:hidden}
+.card::after{content:"";position:absolute;right:-60px;top:-60px;width:180px;height:180px;background:radial-gradient(circle,rgba(255,100,40,.3),transparent 70%);pointer-events:none;animation:fl 7s ease-in-out infinite alternate}
+@keyframes fl{to{transform:translate(-40px,50px) scale(1.25)}}
+.lbl{font-size:13px;color:var(--mut)}
+.big{font-size:38px;font-weight:800;letter-spacing:-.02em;margin:2px 0;font-variant-numeric:tabular-nums}
+.chg{font-weight:700;font-size:15px;transition:color .4s}
+.up{color:var(--up)}.dn{color:var(--dn)}
+svg.ch{width:100%;height:130px;display:block;margin-top:12px;filter:drop-shadow(0 0 8px rgba(255,122,47,.45))}
+.btns{display:flex;margin:16px 0 4px}
+button{font:inherit;cursor:pointer;border:0;color:var(--tx);-webkit-tap-highlight-color:transparent}
+.go{flex:1;padding:15px;border-radius:99px;font-weight:800;font-size:16px;background:linear-gradient(180deg,var(--org),#d9481a);box-shadow:0 8px 28px rgba(255,100,40,.45);transition:transform .25s,box-shadow .4s,background .5s;animation:gp 2.6s ease-in-out infinite}
+@keyframes gp{50%{box-shadow:0 8px 40px rgba(255,100,40,.75)}}
+.go:active{transform:scale(.97)}
+.go.stop{background:#2a1813;border:1px solid var(--line);box-shadow:none;animation:none}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+.grid .card{padding:14px 16px;border-radius:18px}
+.grid .v{font-size:22px;font-weight:800;margin-top:2px;font-variant-numeric:tabular-nums}
+h2{font-size:20px;margin:26px 0 12px;font-weight:800}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:8px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;padding:9px 15px;border-radius:99px;background:transparent;border:1px solid var(--line);color:var(--mut);font-size:14px;font-weight:700;transition:all .3s}
+.tab.a{background:var(--tx);color:#1a0f0c;border-color:var(--tx)}
+.pos{display:flex;justify-content:space-between;align-items:center;padding:14px;border:1px solid var(--line);border-radius:16px;background:var(--card);margin-bottom:8px;animation:in .6s cubic-bezier(.2,.8,.2,1)}
+.pos b{font-size:16px}.pos small{display:block;color:var(--mut);font-size:12px}
+.side{display:inline-block;padding:2px 8px;border-radius:6px;font-size:12px;font-weight:800;margin-right:6px}
+.long{background:rgba(79,217,138,.15);color:var(--up)}.short{background:rgba(255,90,77,.15);color:var(--dn)}
+.r{text-align:right;font-weight:800;font-variant-numeric:tabular-nums}
+.feed{max-height:340px;overflow-y:auto;scrollbar-width:none}
+.feed::-webkit-scrollbar{display:none}
+.it{display:flex;gap:12px;padding:13px 0;border-bottom:1px solid var(--line);animation:in .6s cubic-bezier(.2,.8,.2,1)}
+@keyframes in{from{opacity:0;transform:translateY(-10px) scale(.98)}}
+.ic{flex:none;width:36px;height:36px;border-radius:12px;display:grid;place-items:center;background:#241410;border:1px solid var(--line);color:var(--org);box-shadow:0 0 16px -5px currentColor}
+.ic svg{width:18px;height:18px}
+.ic.news{color:#ffb067}.ic.win{color:var(--up)}.ic.loss{color:var(--dn)}.ic.open{color:#ffd27a}.ic.bot,.ic.pause{color:var(--org)}
+.it p{margin:0;font-size:14px}.it small{color:var(--mut);font-size:12px}
+.empty{color:var(--mut);padding:22px;text-align:center;border:1px dashed var(--line);border-radius:16px;font-size:14px}
+#toast{position:fixed;right:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 14px);width:min(236px,calc(100vw - 24px));z-index:9;background:rgba(30,16,11,.96);border:1px solid #6a3220;border-radius:14px;padding:9px 11px;display:flex;gap:9px;align-items:center;font-size:12px;line-height:1.35;box-shadow:0 10px 36px rgba(0,0,0,.65),0 0 24px -8px rgba(255,110,40,.6);opacity:0;transform:translateX(120%) scale(.96);transition:transform .55s cubic-bezier(.2,.8,.2,1),opacity .4s;pointer-events:none}
+#toast.s{opacity:1;transform:none}
+#toast .ic{width:26px;height:26px;border-radius:9px}
+#toast .ic svg{width:14px;height:14px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="glow"></div>
+<div id="toast"><span class="ic" id="ti"></span><span id="tt"></span></div>
+<div class="wrap">
+<header>
+  <div class="logo"><i></i>Zenith</div>
+  <div class="pill" id="st"><span class="dot"></span><span id="stt">Остановлен</span></div>
+</header>
+<h1>Привет, трейдер</h1>
+<p class="sub">Бот читает новости, ловит сигналы и сам открывает сделки на Binance.</p>
+
+<h2 style="margin-top:0">Уведомления</h2>
+<div class="tabs" id="tabs">
+  <button class="tab a" data-c="all">Все</button>
+  <button class="tab" data-c="news">Новости</button>
+  <button class="tab" data-c="sig">Сигналы</button>
+  <button class="tab" data-c="trade">Сделки</button>
+</div>
+<div class="feed" id="feed" style="margin-bottom:22px"><div class="empty" id="fe">Нажмите «Начать торговлю», и здесь появятся новости, сигналы и сделки бота.</div></div>
+
+<div class="card">
+  <div class="lbl">Баланс, USDT</div>
+  <div class="big" id="bal">1 000,00</div>
+  <div class="chg up" id="pl">+0,00 (0,00%) сегодня</div>
+  <svg class="ch" id="chart" viewBox="0 0 300 130" preserveAspectRatio="none"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff7a2f" stop-opacity=".5"/><stop offset="1" stop-color="#ff7a2f" stop-opacity="0"/></linearGradient></defs><path id="pa" fill="url(#g)"/><path id="pl2" fill="none" stroke="#ff7a2f" stroke-width="2.4" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>
+  <div class="btns"><button class="go" id="go">Начать торговлю</button></div>
+</div>
+
+<div class="grid">
+  <div class="card"><div class="lbl">Заработано</div><div class="v up" id="gp">+0,00</div></div>
+  <div class="card"><div class="lbl">Потери</div><div class="v dn" id="gm">−0,00</div></div>
+  <div class="card"><div class="lbl">Сделок закрыто</div><div class="v" id="gc">0</div></div>
+  <div class="card"><div class="lbl">Успешных</div><div class="v" id="gw">—</div></div>
+</div>
+
+<h2>Открытые сделки</h2>
+<div id="pos"></div>
+</div>
+
+<script>
+var $=function(i){return document.getElementById(i)};
+var IC={news:'<path d="M4 5h13v14H6a2 2 0 0 1-2-2z"/><path d="M17 9h3v8a2 2 0 0 1-2 2"/><path d="M8 9h5M8 13h5"/>',sig:'<path d="M3 12h4l3-8 4 16 3-8h4"/>',open:'<path d="M7 17L17 7M9 7h8v8"/>',win:'<circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/>',loss:'<circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/>',bot:'<rect x="5" y="8" width="14" height="11" rx="3"/><path d="M12 8V5M9 13h.01M15 13h.01M9.5 16h5"/>',pause:'<path d="M9 6v12M15 6v12"/>'};
+function ic(k){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+IC[k]+'</svg>'}
+var P={BTC:67420,ETH:3520,SOL:168,BNB:605},bal=1000,hist=[1000,1000],pos=[],plus=0,minus=0,cnt=0,win=0,run=false,tm=null,step=0,filt='all',shown=1000;
+var NEWS=[["ETF на Bitcoin: приток средств за сутки вырос","BTC","up"],["ФРС сохранила ставку, рынок реагирует спокойно","BTC","up"],["Ethereum: крупные кошельки выводят монеты с бирж","ETH","up"],["Solana: активность в сети выросла на 18%","SOL","up"],["Регулятор готовит жёсткие правила для бирж","BNB","dn"],["Крупный перевод Bitcoin на биржу, возможна продажа","BTC","dn"]];
+var SIG=["EMA 9 пересекла EMA 21 вверх, RSI 54","EMA 9 пересекла EMA 21 вниз, RSI 46","Пробой уровня сопротивления на 15 минутах","Отскок от поддержки, объём выше среднего"];
+function f(n,d){return n.toLocaleString('ru-RU',{minimumFractionDigits:d,maximumFractionDigits:d})}
+function sg(n){return (n>=0?'+':'−')+f(Math.abs(n),2)}
+function toast(k,t){var i=$('ti');i.className='ic '+k;i.innerHTML=ic(k);$('tt').textContent=t;var e=$('toast');e.classList.add('s');clearTimeout(e._t);e._t=setTimeout(function(){e.classList.remove('s')},2800)}
+function add(c,k,t){var fe=$('fe');if(fe)fe.remove();var d=document.createElement('div');d.className='it';d.dataset.c=c;d.innerHTML='<span class="ic '+k+'">'+ic(k)+'</span><div><p>'+t+'</p><small>'+new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit',second:'2-digit'})+'</small></div>';d.style.display=(filt=='all'||filt==c)?'':'none';$('feed').prepend(d);while($('feed').children.length>2)$('feed').lastChild.remove();toast(k,t)}
+function eq(){var s=bal;pos.forEach(function(p){s+=p.pnl});return s}
+function draw(v){var a=hist.slice(-39);a.push(v);var mn=Math.min.apply(0,a),mx=Math.max.apply(0,a),r=(mx-mn)||1,l=a.map(function(y,i){return(i?'L':'M')+(i*300/(a.length-1)).toFixed(1)+' '+(110-((y-mn)/r)*95).toFixed(1)}).join(' ');$('pl2').setAttribute('d',l);$('pa').setAttribute('d',l+' L300 130 L0 130Z')}
+function frame(){var t=eq();shown+=(t-shown)*.09;$('bal').textContent=f(shown,2);var d=shown-1000,p=$('pl');p.textContent=sg(d)+' ('+(d>=0?'+':'−')+f(Math.abs(d/10),2)+'%) сегодня';p.className='chg '+(d>=0?'up':'dn');draw(shown);requestAnimationFrame(frame)}
+function ui(){$('gp').textContent='+'+f(plus,2);$('gm').textContent='−'+f(minus,2);$('gc').textContent=cnt;$('gw').textContent=cnt?Math.round(win/cnt*100)+'%':'—';
+$('pos').innerHTML=pos.length?pos.map(function(p){return '<div class="pos"><div><b>'+p.s+'/USDT</b><small><span class="side '+p.d+'">'+(p.d=='long'?'LONG':'SHORT')+'</span>вход '+f(p.e,2)+'</small></div><div class="r '+(p.pnl>=0?'up':'dn')+'">'+sg(p.pnl)+' USDT<small style="font-weight:500">стоп '+f(p.sl,2)+'</small></div></div>'}).join(''):'<div class="empty">Пока нет открытых сделок. Бот ждёт сигнал.</div>'}
+function tick(){for(var k in P)P[k]*=1+(Math.random()-.5)*.003;
+for(var i=pos.length-1;i>=0;i--){var p=pos[i],dir=p.d=='long'?1:-1;P[p.s]*=1+dir*(p.w?.0009:-.0007);p.pnl=(P[p.s]-p.e)*p.q*dir;var pc=(P[p.s]-p.e)/p.e*dir;
+if(pc>.005||pc<-.004){bal+=p.pnl;cnt++;if(p.pnl>=0){plus+=p.pnl;win++}else minus-=p.pnl;add('trade',p.pnl>=0?'win':'loss','Закрыта '+(p.d=='long'?'LONG':'SHORT')+' '+p.s+'/USDT: '+sg(p.pnl)+' USDT'+(p.pnl>=0?' (тейк-профит)':' (стоп-лосс)'));pos.splice(i,1)}}
+step++;var m=step%4;
+if(m==1){var n=NEWS[Math.floor(Math.random()*NEWS.length)];add('news','news','Бот прочитал новость: '+n[0]+'. Оценка '+n[1]+': '+(n[2]=='up'?'позитивная':'негативная'))}
+if(m==2)add('sig','sig',SIG[Math.floor(Math.random()*SIG.length)]+'. Проверяю риск…');
+if(m==3&&pos.length<3){var ks=Object.keys(P),s=ks[Math.floor(Math.random()*ks.length)],d=Math.random()>.45?'long':'short',e=P[s],amt=bal*.25,q=amt/e,sl=d=='long'?e*.996:e*1.004;pos.push({s:s,d:d,e:e,q:q,sl:sl,pnl:0,w:Math.random()<.76});add('trade','open','Открыта '+(d=='long'?'LONG':'SHORT')+' '+s+'/USDT по '+f(e,2)+', ставка '+f(amt,2)+' USDT, стоп '+f(sl,2))}
+hist.push(eq());ui()}
+$('go').onclick=function(){run=!run;var b=$('go');if(run){b.textContent='Остановить';b.classList.add('stop');$('st').classList.add('on');$('stt').textContent='Бот работает';toast('bot','Бот запущен, анализирую рынок');tm=setInterval(tick,1000);setTimeout(tick,400)}else{b.textContent='Начать торговлю';b.classList.remove('stop');$('st').classList.remove('on');$('stt').textContent='Остановлен';clearInterval(tm);toast('pause','Бот остановлен. Открытые сделки под стоп-лоссом')}};
+$('tabs').onclick=function(e){var t=e.target.closest('.tab');if(!t)return;filt=t.dataset.c;document.querySelectorAll('.tab').forEach(function(x){x.classList.toggle('a',x==t)});document.querySelectorAll('.it').forEach(function(x){x.style.display=(filt=='all'||x.dataset.c==filt)?'':'none'})};
+ui();requestAnimationFrame(frame);
+</script>
+</body>
+</html>
